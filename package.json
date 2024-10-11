@@ -1,0 +1,23 @@
+{
+  "name": "scrappers",
+  "private": false,
+  "version": "0.0.1",
+  "description": "A project to scrap data and serve data using api.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.7",
+    "prisma": "^5.20.0",
+    "typescript": "^5.2.2",
+    "vitest": "^2.1.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "axios": "^1.7.7",
+    "cheerio": "^1.0.0",
+    "encore.dev": "^1.41.7"
+  }
+}
