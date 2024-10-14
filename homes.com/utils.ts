@@ -10,3 +10,15 @@ export const removeExtraHtml = ($: CheerioAPI): CheerioAPI => {
   $("script").remove();
   return $;
 };
+
+export const validateEnvVariables = (requiredEnvVariables: string[]) => {
+  const missingEnvVariables = requiredEnvVariables.filter(
+    (key) => !process.env[key]
+  );
+
+  if (missingEnvVariables.length > 0) {
+    throw new Error(
+      `Missing environment variables: ${missingEnvVariables.join(", ")}`
+    );
+  }
+};

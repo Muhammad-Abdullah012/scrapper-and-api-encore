@@ -1,8 +1,16 @@
 import axios from "axios";
-import * as cheerio from "cheerio";
+import { config } from "dotenv";
+import { load, CheerioAPI } from "cheerio";
 import { api } from "encore.dev/api";
-import { getTotalPages, removeExtraHtml } from "./utils";
+import { getTotalPages, removeExtraHtml, validateEnvVariables } from "./utils";
 import { bulkInsertUrls } from "./queries";
+import { prisma } from "./db-config";
+
+config();
+
+const { ITALIAN_CITIES_NAMES } = process.env;
+
+validateEnvVariables(["ITALIAN_CITIES_NAMES"]);
 
 interface Response {
   message: string;
@@ -25,9 +33,20 @@ export const scrapeHomes = api(
 
 const startScrapingHomesDotCom = async () => {
   try {
+    if (!ITALIAN_CITIES_NAMES) throw new Error("ITALIAN_CITIES_NAMES not set");
     console.time("startScrapingHomesDotCom");
     console.log("startScrapingHomesDotCom started");
-    const cities = [{ name: "milano" }];
+
+    await prisma.cities_encore.createMany({
+      data: ITALIAN_CITIES_NAMES.split(",").map((city) => ({
+        name: city,
+      })),
+      skipDuplicates: true,
+    });
+
+    const cities = await prisma.cities_encore.findMany({
+      select: { id: true, name: true },
+    });
 
     await iterateAllPages(
       [
@@ -62,7 +81,7 @@ const fetchAndProcessPage = async (url: string, page: number) => {
     const pageUrl = url.replace("*", page.toString());
     console.log("fetching page => ", pageUrl);
     const response = await axios.get(pageUrl);
-    const $ = removeExtraHtml(cheerio.load(response.data));
+    const $ = removeExtraHtml(load(response.data));
     await processPage($);
     return page === 1 ? getTotalPages($) : null;
   } catch (err) {
@@ -71,7 +90,7 @@ const fetchAndProcessPage = async (url: string, page: number) => {
   }
 };
 
-const processPage = ($: cheerio.CheerioAPI): Promise<void> => {
+const processPage = ($: CheerioAPI): Promise<void> => {
   const listings = $("ul.ls-results").find("li.in-searchLayoutListItem");
   if (listings.length === 0) {
     console.log("No listings found on this page");
