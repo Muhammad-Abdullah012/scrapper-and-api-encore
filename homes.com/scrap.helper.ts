@@ -14,9 +14,11 @@ export const iterateAllPages = async (
     const lastPage = await fetchAndProcessPage(url, 1, cityId);
     if (lastPage == null) continue;
     console.log("lastPage => ", lastPage);
+    const promises: Promise<number | null>[] = [];
     for (let i = 2; i <= lastPage; i++) {
-      await fetchAndProcessPage(url, i, cityId);
+      promises.push(fetchAndProcessPage(url, i, cityId));
     }
+    await Promise.allSettled(promises);
   }
 };
 
