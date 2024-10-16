@@ -8,11 +8,13 @@ datasource db {
 }
 
 model cities_encore {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  created_at  DateTime?     @default(now()) @db.Timestamptz(6)
-  updated_at  DateTime?     @default(now()) @db.Timestamptz(6)
-  urls_encore urls_encore[]
+  id                Int                 @id @default(autoincrement())
+  name              String              @unique
+  created_at        DateTime?           @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime?           @default(now()) @db.Timestamptz(6)
+  urls_encore       urls_encore[]
+  raw_encore        raw_encore[]
+  properties_encore properties_encore[]
 }
 
 model urls_encore {
@@ -20,6 +22,30 @@ model urls_encore {
   url           String         @unique
   is_processed  Boolean?       @default(false)
   city_id       Int?
+  created_at    DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime?      @default(now()) @db.Timestamptz(6)
+  cities_encore cities_encore? @relation(fields: [city_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model raw_encore {
+  id            Int            @id @default(autoincrement())
+  url           String         @unique
+  is_processed  Boolean?       @default(false)
+  city_id       Int?
+  html          String         @default("")
+  created_at    DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime?      @default(now()) @db.Timestamptz(6)
+  cities_encore cities_encore? @relation(fields: [city_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model properties_encore {
+  id            Int            @id @default(autoincrement())
+  url           String         @unique
+  city_id       Int?
+  title         String?        @default("")
+  main_features String[]       @default([])
+  description   String?        @default("")
+  last_updated  String?        @default("")
   created_at    DateTime?      @default(now()) @db.Timestamptz(6)
   updated_at    DateTime?      @default(now()) @db.Timestamptz(6)
   cities_encore cities_encore? @relation(fields: [city_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
