@@ -66,7 +66,28 @@ export const scrapeHtmlPage = async (
   if (!html.length) return;
   const $ = load(html);
   const title = $(".re-title__title").text();
-  return { url, title, city_id: cityId };
+  const description =
+    $(".re-contentDescriptionHeading__title").text() +
+    "\n" +
+    $(".in-readAll").text();
+  const mainFeatures = $(".re-mainFeatures__item")
+    .map((i, el) => {
+      return $(el).text().trim();
+    })
+    .get();
+  const lastUpdatedDate = $(".re-lastUpdate__text")
+    .text()
+    .trim()
+    .split(" ")
+    .pop();
+  return {
+    url,
+    title,
+    description,
+    city_id: cityId,
+    main_features: mainFeatures,
+    last_updated: lastUpdatedDate,
+  };
 };
 
 export const getHtmlPage = async (page: IPage) => {
