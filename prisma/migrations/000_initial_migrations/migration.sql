@@ -41,6 +41,7 @@ CREATE TABLE properties_encore (
     price_min DOUBLE PRECISION,
     price_max DOUBLE PRECISION,
     price_unit TEXT DEFAULT '',
+    energy_class TEXT DEFAULT '',
     created_at TIMESTAMPTZ(6) DEFAULT NOW(),
     updated_at TIMESTAMPTZ(6) DEFAULT NOW(),
     CONSTRAINT fk_properties_encore_city FOREIGN KEY (city_id) REFERENCES cities_encore (id) ON DELETE NO ACTION ON UPDATE NO ACTION

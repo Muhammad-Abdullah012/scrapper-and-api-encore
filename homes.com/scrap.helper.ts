@@ -85,6 +85,9 @@ export const scrapeHtmlPage = async (
   const isRange = price.hasClass("has-range");
   const priceText = $(".re-overview__price > span:first-child").text().trim();
 
+  const energySpan = $(".re-mainConsumptions__energy");
+  const energyClass = energySpan.attr("data-energy-class");
+
   let price_min: number | null = null;
   let price_max: number | null = null;
   let price_unit: string = priceText[0];
@@ -115,6 +118,7 @@ export const scrapeHtmlPage = async (
     description,
     city_id: cityId,
     price_raw: priceText,
+    energy_class: energyClass,
     main_features: mainFeatures,
     last_updated: lastUpdatedDate,
   };
