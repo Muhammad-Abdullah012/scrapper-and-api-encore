@@ -80,11 +80,40 @@ export const scrapeHtmlPage = async (
     .trim()
     .split(" ")
     .pop();
+  const price = $(".re-overview__price");
+  const isRange = price.hasClass("has-range");
+  const priceText = $(".re-overview__price > span:first-child").text().trim();
+
+  let price_min: number | null = null;
+  let price_max: number | null = null;
+  let price_unit: string = priceText[0];
+
+  if (isRange) {
+    const priceRange = priceText.split("-").map((p) => p.trim());
+    const minPrice = priceRange[0]?.split(" ")?.pop();
+    if (minPrice && !isNaN(Number(minPrice))) {
+      price_min = Number(minPrice);
+    }
+    const maxPrice = priceRange[1]?.split(" ")?.pop();
+    if (maxPrice && !isNaN(Number(maxPrice))) {
+      price_max = Number(maxPrice);
+    }
+  } else {
+    const minPrice = priceText.split(" ").pop();
+    if (minPrice && !isNaN(Number(minPrice))) {
+      price_min = Number(minPrice);
+    }
+  }
+
   return {
     url,
     title,
+    price_min,
+    price_max,
+    price_unit,
     description,
     city_id: cityId,
+    price_raw: priceText,
     main_features: mainFeatures,
     last_updated: lastUpdatedDate,
   };

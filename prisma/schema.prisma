@@ -46,6 +46,10 @@ model properties_encore {
   main_features String[]       @default([])
   description   String?        @default("")
   last_updated  String?        @default("")
+  price_raw     String?        @default("")
+  price_min     Float?
+  price_max     Float?
+  price_unit    String?
   created_at    DateTime?      @default(now()) @db.Timestamptz(6)
   updated_at    DateTime?      @default(now()) @db.Timestamptz(6)
   cities_encore cities_encore? @relation(fields: [city_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
