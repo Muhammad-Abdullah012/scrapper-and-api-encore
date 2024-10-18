@@ -5,6 +5,7 @@ import { IPage } from "./types/scrapper";
 import { getAllPromisesResults, getTotalPages, removeExtraHtml } from "./utils";
 import { prisma } from "./db-config";
 import { bulkInsertUrls } from "./queries";
+import { PrismaClientValidationError } from "@prisma/client/runtime/library";
 
 export const iterateAllPages = async (
   urls: IPage[],
@@ -262,6 +263,9 @@ export const scrapAndInsertData = async () => {
     } catch (err) {
       if (err instanceof Error && err.message === finishedProcessingMessage)
         break;
+      if (err instanceof PrismaClientValidationError) {
+        logger.error("scrapAndInsertData::Error inserting data: ", err.message);
+      }
       logger.error("scrapAndInsertData::Error inserting data: ", err);
     }
   }
