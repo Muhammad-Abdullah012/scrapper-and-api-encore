@@ -72,7 +72,7 @@ const startScrapingHomesDotCom = async () => {
       );
       return [..._urls, ..._urls2];
     });
-    console.log("urls => ", JSON.stringify(urls, null, 2));
+
     await iterateAllPages(urls, {});
     // fetch html for each urls and store it in db
     await processInBatches();
