@@ -36,7 +36,7 @@ CREATE TABLE properties_encore (
     title TEXT DEFAULT '',
     main_features TEXT [] DEFAULT '{}',
     description TEXT DEFAULT '',
-    last_updated VARCHAR(255) DEFAULT '',
+    last_updated TIMESTAMPTZ(6) DEFAULT NOW(),
     price_raw TEXT DEFAULT '',
     price_min DOUBLE PRECISION,
     price_max DOUBLE PRECISION,

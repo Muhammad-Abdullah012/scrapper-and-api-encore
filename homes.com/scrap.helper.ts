@@ -108,6 +108,7 @@ export const scrapeHtmlPage = async (
       price_min = Number(minPrice);
     }
   }
+  const dateParts = lastUpdatedDate?.split("/");
 
   return {
     url,
@@ -120,7 +121,9 @@ export const scrapeHtmlPage = async (
     price_raw: priceText,
     energy_class: energyClass,
     main_features: mainFeatures,
-    last_updated: lastUpdatedDate,
+    last_updated: dateParts
+      ? new Date(+dateParts[2], Number(dateParts[1]) - 1, +dateParts[0])
+      : null,
   };
 };
 
@@ -268,7 +271,7 @@ export const scrapAndInsertData = async () => {
       if (err instanceof Error && err.message === finishedProcessingMessage)
         break;
       if (err instanceof PrismaClientValidationError) {
-        logger.error("scrapAndInsertData::Error inserting data: ", err.message);
+        console.log("error : ", err.message);
       }
       logger.error("scrapAndInsertData::Error inserting data: ", err);
     }
